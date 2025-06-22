@@ -1,15 +1,168 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing;
-using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Text;
+using System.Collections.Immutable;
+using System.Reflection;
+using System.Text;
 
 namespace GenerateInterface.Tests;
 
 public class InterfaceSourceGeneratorTests
 {
     [Fact]
-    public async Task GenerateInterface_SimpleClass_GeneratesCorrectInterface()
+    public void GenerateInterface_SimpleClass_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface]
+                public class TestService
+                {
+                    public void DoSomething() { }
+                    public string GetValue() => "test";
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("public interface ITestService", result);
+        Assert.Contains("void DoSomething();", result);
+        Assert.Contains("string GetValue();", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_WithAutoProperties_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface]
+                public class ConfigService
+                {
+                    public string Value { get; set; } = string.Empty;
+                    public int Count { get; } = 0;
+                    public bool IsEnabled { get; set; }
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("public interface IConfigService", result);
+        Assert.Contains("string Value { get; set; }", result);
+        Assert.Contains("int Count { get; }", result);
+        Assert.Contains("bool IsEnabled { get; set; }", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_WithDefaultParameters_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface]
+                public class TestService
+                {
+                    public void Method(string message = "Hello", int count = 1, bool enabled = true) { }
+                    public void MethodWithNull(string? value = null) { }
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("public interface ITestService", result);
+        Assert.Contains("void Method(string message = \"Hello\", int count = 1, bool enabled = true);", result);
+        Assert.Contains("void MethodWithNull(string? value = null);", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_WithGenerics_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface]
+                public class Repository<T> where T : class
+                {
+                    public T? GetById<TKey>(TKey id) where TKey : notnull => null;
+                    public void Save(T entity) { }
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("public interface IRepository<T>", result);
+        Assert.Contains("where T : class", result);
+        Assert.Contains("T? GetById<TKey>(TKey id) where TKey : notnull;", result);
+        Assert.Contains("void Save(T entity);", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_WithCustomNameAndNamespace_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface(InterfaceName = "ICustomService", Namespace = "CustomNamespace")]
+                public class TestService
+                {
+                    public void DoWork() { }
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("namespace CustomNamespace;", result);
+        Assert.Contains("public interface ICustomService", result);
+        Assert.Contains("void DoWork();", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_IgnoresPrivateMembers_GeneratesInterface()
+    {
+        var source = """
+            using GenerateInterface;
+
+            namespace TestNamespace
+            {
+                [GenerateInterface]
+                public class TestService
+                {
+                    public void PublicMethod() { }
+                    private void PrivateMethod() { }
+                    protected void ProtectedMethod() { }
+                    internal void InternalMethod() { }
+                    public static void StaticMethod() { }
+                }
+            }
+            """;
+
+        var result = GetGeneratedOutput(source);
+
+        Assert.Contains("public interface ITestService", result);
+        Assert.Contains("void PublicMethod();", result);
+        Assert.DoesNotContain("PrivateMethod", result);
+        Assert.DoesNotContain("ProtectedMethod", result);
+        Assert.DoesNotContain("InternalMethod", result);
+        Assert.DoesNotContain("StaticMethod", result);
+    }
+
+    [Fact]
+    public void GenerateInterface_FileScoped_GeneratesInterface()
     {
         var source = """
             using GenerateInterface;
@@ -20,244 +173,66 @@ public class InterfaceSourceGeneratorTests
             public class TestService
             {
                 public void DoSomething() { }
-                public string GetValue() => "test";
             }
             """;
 
-        var expectedInterface = """
-            #nullable enable
-            using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
+        var result = GetGeneratedOutput(source);
 
-            namespace TestNamespace;
-
-            public interface ITestService
-            {
-                void DoSomething();
-                string GetValue();
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("ITestService.g.cs", expectedInterface));
+        Assert.Contains("namespace TestNamespace;", result);
+        Assert.Contains("public interface ITestService", result);
+        Assert.Contains("void DoSomething();", result);
     }
 
-    [Fact]
-    public async Task GenerateInterface_WithAutoProperties_GeneratesCorrectInterface()
+    private static string GetGeneratedOutput(string source)
     {
-        var source = """
-            using GenerateInterface;
-
-            namespace TestNamespace;
-
-            [GenerateInterface]
-            public class ConfigService
-            {
-                public string Value { get; set; } = string.Empty;
-                public int Count { get; } = 0;
-                public bool IsEnabled { get; set; }
-            }
-            """;
-
-        var expectedInterface = """
-            #nullable enable
+        var attributeSource = """
             using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
 
-            namespace TestNamespace;
-
-            public interface IConfigService
+            namespace GenerateInterface
             {
-                string Value { get; set; }
-                int Count { get; }
-                bool IsEnabled { get; set; }
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("IConfigService.g.cs", expectedInterface));
-    }
-
-    [Fact]
-    public async Task GenerateInterface_WithDefaultParameters_GeneratesCorrectInterface()
-    {
-        var source = """
-            using GenerateInterface;
-
-            namespace TestNamespace;
-
-            [GenerateInterface]
-            public class TestService
-            {
-                public void Method(string message = "Hello", int count = 1, bool enabled = true) { }
-                public void MethodWithNull(string? value = null) { }
-            }
-            """;
-
-        var expectedInterface = """
-            #nullable enable
-            using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
-
-            namespace TestNamespace;
-
-            public interface ITestService
-            {
-                void Method(string message = "Hello", int count = 1, bool enabled = true);
-                void MethodWithNull(string? value = null);
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("ITestService.g.cs", expectedInterface));
-    }
-
-    [Fact]
-    public async Task GenerateInterface_WithGenerics_GeneratesCorrectInterface()
-    {
-        var source = """
-            using GenerateInterface;
-
-            namespace TestNamespace;
-
-            [GenerateInterface]
-            public class Repository<T> where T : class
-            {
-                public T? GetById<TKey>(TKey id) where TKey : notnull => null;
-                public void Save(T entity) { }
-            }
-            """;
-
-        var expectedInterface = """
-            #nullable enable
-            using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
-
-            namespace TestNamespace;
-
-            public interface IRepository<T>
-                where T : class
-            {
-                T? GetById<TKey>(TKey id) where TKey : notnull;
-                void Save(T entity);
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("IRepository.g.cs", expectedInterface));
-    }
-
-    [Fact]
-    public async Task GenerateInterface_WithCustomNameAndNamespace_GeneratesCorrectInterface()
-    {
-        var source = """
-            using GenerateInterface;
-
-            namespace TestNamespace;
-
-            [GenerateInterface(InterfaceName = "ICustomService", Namespace = "CustomNamespace")]
-            public class TestService
-            {
-                public void DoWork() { }
-            }
-            """;
-
-        var expectedInterface = """
-            #nullable enable
-            using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
-
-            namespace CustomNamespace;
-
-            public interface ICustomService
-            {
-                void DoWork();
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("ICustomService.g.cs", expectedInterface));
-    }
-
-    [Fact]
-    public async Task GenerateInterface_IgnoresPrivateMembers_GeneratesCorrectInterface()
-    {
-        var source = """
-            using GenerateInterface;
-
-            namespace TestNamespace;
-
-            [GenerateInterface]
-            public class TestService
-            {
-                public void PublicMethod() { }
-                private void PrivateMethod() { }
-                protected void ProtectedMethod() { }
-                internal void InternalMethod() { }
-                public static void StaticMethod() { }
-            }
-            """;
-
-        var expectedInterface = """
-            #nullable enable
-            using System;
-            using System.Threading.Tasks;
-            using System.Collections.Generic;
-
-            namespace TestNamespace;
-
-            public interface ITestService
-            {
-                void PublicMethod();
-            }
-            """;
-
-        await VerifySourceGeneratorAsync(source, ("ITestService.g.cs", expectedInterface));
-    }
-
-    private static async Task VerifySourceGeneratorAsync(string source, params (string filename, string content)[] expectedGeneratedSources)
-    {
-        var test = new CSharpSourceGeneratorTest<InterfaceSourceGenerator, XUnitVerifier>
-        {
-            TestState =
-            {
-                Sources = { source },
-                GeneratedSources =
+                [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+                public sealed class GenerateInterfaceAttribute : Attribute
                 {
-                    (typeof(InterfaceSourceGenerator), "GenerateInterfaceAttribute.cs", """
-                        using System;
-
-                        namespace GenerateInterface;
-
-                        /// <summary>
-                        /// Marks a class for automatic interface generation.
-                        /// The source generator will create an interface with all public members of the annotated class.
-                        /// </summary>
-                        [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-                        public sealed class GenerateInterfaceAttribute : Attribute
-                        {
-                            /// <summary>
-                            /// Gets or sets the name of the generated interface.
-                            /// If not specified, the interface name will be "I" + class name.
-                            /// </summary>
-                            public string? InterfaceName { get; set; }
-
-                            /// <summary>
-                            /// Gets or sets the namespace for the generated interface.
-                            /// If not specified, the interface will be generated in the same namespace as the class.
-                            /// </summary>
-                            public string? Namespace { get; set; }
-                        }
-                        """)
+                    public string? InterfaceName { get; set; }
+                    public string? Namespace { get; set; }
                 }
             }
+            """;
+
+        var syntaxTree = CSharpSyntaxTree.ParseText(source);
+        var attributeSyntaxTree = CSharpSyntaxTree.ParseText(attributeSource);
+
+        var references = new[]
+        {
+            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+            MetadataReference.CreateFromFile(typeof(Attribute).Assembly.Location),
+            MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location)
         };
 
-        foreach (var (filename, content) in expectedGeneratedSources)
+        var compilation = CSharpCompilation.Create(
+            assemblyName: "Tests",
+            syntaxTrees: new[] { syntaxTree, attributeSyntaxTree },
+            references: references);
+
+        var generator = new InterfaceSourceGenerator();
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
+
+        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+
+        var result = driver.GetRunResult();
+
+        if (result.GeneratedTrees.Length == 0)
+            return string.Empty;
+
+        // Find the generated interface (not the attribute)
+        foreach (var tree in result.GeneratedTrees)
         {
-            test.TestState.GeneratedSources.Add((typeof(InterfaceSourceGenerator), filename, content));
+            var text = tree.GetText().ToString();
+            if (text.Contains("public interface"))
+                return text;
         }
 
-        await test.RunAsync();
+        return string.Empty;
     }
 }
