@@ -1,0 +1,10 @@
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.csproj.AssemblyReference.cache
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.GeneratedMSBuildEditorConfig.editorconfig
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.AssemblyInfoInputs.cache
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.AssemblyInfo.cs
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.csproj.CoreCompileInputs.cache
+/home/grant/Code/GenerateInterface/src/GenerateInterface/bin/Release/netstandard2.0/GenerateInterface.deps.json
+/home/grant/Code/GenerateInterface/src/GenerateInterface/bin/Release/netstandard2.0/GenerateInterface.dll
+/home/grant/Code/GenerateInterface/src/GenerateInterface/bin/Release/netstandard2.0/GenerateInterface.pdb
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.dll
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.pdb

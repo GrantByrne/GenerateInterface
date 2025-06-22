@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>GenerateInterface</id>
+    <version>1.0.0</version>
+    <authors>GenerateInterface Contributors</authors>
+    <developmentDependency>true</developmentDependency>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/your-username/GenerateInterface</projectUrl>
+    <description>A C# source generator that automatically creates interfaces from classes annotated with [GenerateInterface].</description>
+    <tags>sourcegenerator interface dependency-injection roslyn</tags>
+    <repository type="git" url="https://github.com/your-username/GenerateInterface" commit="d8e13fbf41a24a92cd4c82d2fed38ce13465d5bb" />
+  </metadata>
+  <files>
+    <file src="/home/grant/Code/GenerateInterface/README.md" target="/README.md" />
+  </files>
+</package>

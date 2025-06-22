@@ -1,31 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface/GenerateInterface.csproj": {}
+    "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj": {}
   },
   "projects": {
-    "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface/GenerateInterface.csproj": {
+    "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface/GenerateInterface.csproj",
+        "projectUniqueName": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj",
         "projectName": "GenerateInterface",
-        "projectPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface/GenerateInterface.csproj",
+        "projectPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj",
         "packagesPath": "/home/grant/.nuget/packages/",
-        "outputPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface/obj/",
+        "outputPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/grant/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "netstandard2.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {},
           "https://nuget.pkg.github.com/teraswitch/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
             "projectReferences": {}
           }
         },
@@ -42,8 +42,26 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Microsoft.CodeAnalysis.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.4, )"
+            },
+            "Microsoft.CodeAnalysis.CSharp": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -55,12 +73,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "/home/grant/.dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/grant/.dotnet/sdk/9.0.300/RuntimeIdentifierGraph.json"
         }
       }
     }
