@@ -63,7 +63,8 @@ namespace GenerateInterface
             
             var stringBuilder = new StringBuilder();
             
-            // Add using statements
+            // Add nullable directive and using statements
+            stringBuilder.AppendLine("#nullable enable");
             stringBuilder.AppendLine("using System;");
             stringBuilder.AppendLine("using System.Threading.Tasks;");
             stringBuilder.AppendLine("using System.Collections.Generic;");

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "GenerateInterface.Example/1.0.0": {
+        "dependencies": {
+          "GenerateInterface": "1.0.0"
+        },
+        "runtime": {
+          "GenerateInterface.Example.dll": {}
+        }
+      },
+      "GenerateInterface/1.0.0": {
+        "runtime": {
+          "GenerateInterface.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GenerateInterface.Example/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GenerateInterface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
