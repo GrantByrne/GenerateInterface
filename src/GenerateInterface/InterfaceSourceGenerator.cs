@@ -138,7 +138,7 @@ namespace GenerateInterface
                 .Where(m => m.DeclaredAccessibility == Accessibility.Public)
                 .Where(m => m.Kind == SymbolKind.Method || m.Kind == SymbolKind.Property)
                 .Where(m => !m.IsStatic)
-                .Where(m => m.Kind != SymbolKind.Method || !((IMethodSymbol)m).IsConstructor());
+                .Where(m => m.Kind != SymbolKind.Method || ((IMethodSymbol)m).MethodKind != MethodKind.Constructor);
         }
 
         private string GenerateMemberDeclaration(ISymbol member)
