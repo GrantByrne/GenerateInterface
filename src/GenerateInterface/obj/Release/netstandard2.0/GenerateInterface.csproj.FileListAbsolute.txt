@@ -8,3 +8,4 @@
 /home/grant/Code/GenerateInterface/src/GenerateInterface/bin/Release/netstandard2.0/GenerateInterface.pdb
 /home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.dll
 /home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.pdb
+/home/grant/Code/GenerateInterface/src/GenerateInterface/obj/Release/netstandard2.0/GenerateInterface.sourcelink.json

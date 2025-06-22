@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="GenerateInterface Logo" style="max-width: 300px;" />
+</p>
+
 # GenerateInterface
 
 A C# source generator that automatically creates interfaces from classes annotated with `[GenerateInterface]`.
