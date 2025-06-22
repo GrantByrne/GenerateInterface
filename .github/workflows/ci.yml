@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore src/GenerateInterface.sln
+    
+    - name: Build
+      run: dotnet build src/GenerateInterface.sln --configuration Release --no-restore
+    
+    - name: Test example project
+      run: dotnet run --project src/GenerateInterface.Example --configuration Release --no-build
+    
+    - name: Verify generated interfaces exist
+      run: |
+        # Check that interfaces were generated
+        if [ ! -f "src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface/GenerateInterface.InterfaceSourceGenerator/IUserService.g.cs" ]; then
+          echo "IUserService interface was not generated"
+          exit 1
+        fi
+        echo "Source generator successfully generated interfaces"
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: src/GenerateInterface/bin/Release/*.nupkg

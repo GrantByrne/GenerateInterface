@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Extract version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Update package version
+      run: |
+        sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${{ steps.get_version.outputs.VERSION }}<\/PackageVersion>/" src/GenerateInterface/GenerateInterface.csproj
+    
+    - name: Restore dependencies
+      run: dotnet restore src/GenerateInterface.sln
+    
+    - name: Build
+      run: dotnet build src/GenerateInterface.sln --configuration Release --no-restore
+    
+    - name: Test example project
+      run: dotnet run --project src/GenerateInterface.Example --configuration Release --no-build
+    
+    - name: Pack NuGet package
+      run: dotnet pack src/GenerateInterface --configuration Release --no-build --output ./packages
+    
+    - name: Publish to NuGet
+      run: dotnet nuget push ./packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## Changes in this Release
+          
+          - Automatic interface generation for classes annotated with `[GenerateInterface]`
+          - Support for generics, async methods, and complex type constraints
+          - Configurable interface names and namespaces
+          - Zero runtime dependencies
+          
+          ### Installation
+          ```bash
+          dotnet add package GenerateInterface --version ${{ steps.get_version.outputs.VERSION }}
+          ```
+        draft: false
+        prerelease: false
+    
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./packages/GenerateInterface.${{ steps.get_version.outputs.VERSION }}.nupkg
+        asset_name: GenerateInterface.${{ steps.get_version.outputs.VERSION }}.nupkg
+        asset_content_type: application/zip
