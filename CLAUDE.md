@@ -14,6 +14,8 @@ When completing any item on the todo list, follow this strict workflow:
 - **Release builds must pass** - Always build in Release configuration to catch optimization issues
 - **Clean commits** - Each logical change should be in its own commit
 - **Descriptive commit messages** - Follow conventional commit format when possible
+- **File-scoped namespaces** - All C# files should use file-scoped namespaces (namespace MyNamespace;) instead of block-scoped namespaces
+- **Remove auto-generated files** - When creating new projects, always remove auto-generated Class1.cs files
 
 ## Project Structure
 - All source code in `src/` directory
