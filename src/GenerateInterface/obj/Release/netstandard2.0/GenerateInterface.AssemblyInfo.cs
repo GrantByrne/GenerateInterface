@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("A C# source generator that automatically creates interfaces from classes annotate" +
     "d with [GenerateInterface]."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d8e13fbf41a24a92cd4c82d2fed38ce13465d5bb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8652fb94ea7ad079599131d37d2e025619521fa")]
 [assembly: System.Reflection.AssemblyProductAttribute("GenerateInterface")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GenerateInterface")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
