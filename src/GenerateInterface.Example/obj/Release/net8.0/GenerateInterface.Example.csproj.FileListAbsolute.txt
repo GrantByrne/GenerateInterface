@@ -1,0 +1,5 @@
+/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface.Example.GeneratedMSBuildEditorConfig.editorconfig
+/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface.Example.AssemblyInfoInputs.cache
+/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface.Example.AssemblyInfo.cs
+/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface.Example.csproj.CoreCompileInputs.cache
+/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/Release/net8.0/GenerateInterface.Example.csproj.AssemblyReference.cache

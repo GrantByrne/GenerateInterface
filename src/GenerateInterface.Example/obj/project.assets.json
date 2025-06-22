@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {}
+    "net8.0": {
+      "GenerateInterface/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/GenerateInterface.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GenerateInterface.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "GenerateInterface/1.0.0": {
+      "type": "project",
+      "path": "../GenerateInterface/GenerateInterface.csproj",
+      "msbuildProject": "../GenerateInterface/GenerateInterface.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net9.0": []
+    "net8.0": [
+      "GenerateInterface >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "/home/grant/.nuget/packages/": {}
@@ -13,26 +32,30 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/GenerateInterface.Example/GenerateInterface.Example.csproj",
+      "projectUniqueName": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/GenerateInterface.Example.csproj",
       "projectName": "GenerateInterface.Example",
-      "projectPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/GenerateInterface.Example/GenerateInterface.Example.csproj",
+      "projectPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/GenerateInterface.Example.csproj",
       "packagesPath": "/home/grant/.nuget/packages/",
-      "outputPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/GenerateInterface.Example/obj/",
+      "outputPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface.Example/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/grant/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net9.0"
+        "net8.0"
       ],
       "sources": {
         "https://api.nuget.org/v3/index.json": {},
         "https://nuget.pkg.github.com/teraswitch/index.json": {}
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
-          "projectReferences": {}
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {
+            "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj": {
+              "projectPath": "/home/grant/Code/GenerateInterface/src/GenerateInterface/GenerateInterface.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -48,8 +71,8 @@
       "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
-      "net9.0": {
-        "targetAlias": "net9.0",
+      "net8.0": {
+        "targetAlias": "net8.0",
         "imports": [
           "net461",
           "net462",

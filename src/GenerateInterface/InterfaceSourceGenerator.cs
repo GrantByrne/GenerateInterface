@@ -73,9 +73,29 @@ namespace GenerateInterface
             stringBuilder.AppendLine($"namespace {interfaceNamespace}");
             stringBuilder.AppendLine("{");
 
-            // Add interface declaration
+            // Add interface declaration with type parameters
             var accessibility = GetAccessibilityString(classSymbol.DeclaredAccessibility);
-            stringBuilder.AppendLine($"    {accessibility} interface {interfaceName}");
+            var typeParameters = "";
+            if (classSymbol.TypeParameters.Length > 0)
+            {
+                typeParameters = "<" + string.Join(", ", classSymbol.TypeParameters.Select(tp => tp.Name)) + ">";
+            }
+            
+            stringBuilder.AppendLine($"    {accessibility} interface {interfaceName}{typeParameters}");
+            
+            // Add type parameter constraints for the interface
+            if (classSymbol.TypeParameters.Length > 0)
+            {
+                foreach (var typeParam in classSymbol.TypeParameters)
+                {
+                    var constraints = GenerateTypeParameterConstraints(typeParam);
+                    if (!string.IsNullOrEmpty(constraints))
+                    {
+                        stringBuilder.AppendLine($"        {constraints}");
+                    }
+                }
+            }
+            
             stringBuilder.AppendLine("    {");
 
             // Add public members
